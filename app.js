@@ -1,4 +1,4 @@
-// app.js
+// app.jsjjjj
 
 function processEquation() {
     const equationInput = document.getElementById('equationInput').value;
