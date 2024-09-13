@@ -1,9 +1,15 @@
-// app.jsjjjj
-
 function processEquation() {
-    const equationInput = document.getElementById('equationInput').value;
+    const equationInput = document.getElementById('equationInput').value; //
     const treeContainer = document.getElementById('treeContainer');
     const errorAlert = document.getElementById('errorAlert');
+    const preOrderTable = document.getElementById('preOrderTable');
+    const inOrderTable = document.getElementById('inOrderTable');
+    const postOrderTable = document.getElementById('postOrderTable');
+
+    // Limpiar las tablas antes de mostrar los resultados
+    preOrderTable.innerHTML = '';
+    inOrderTable.innerHTML = '';
+    postOrderTable.innerHTML = '';
 
     // Formatear la ecuación para corregir multiplicaciones implícitas
     const formattedEquation = formatEquation(equationInput);
@@ -23,18 +29,67 @@ function processEquation() {
 
     // Mostrar el árbol gráficamente
     displayTree(equationTree, treeContainer);
+
+    // Mostrar recorridos en preorden, inorden y postorden
+    displayTraversals(equationTree);
 }
 
+function displayTraversals(tree) {
+    const preOrderTable = document.getElementById('preOrderTable');
+    const inOrderTable = document.getElementById('inOrderTable');
+    const postOrderTable = document.getElementById('postOrderTable');
+
+    // Obtener los recorridos
+    const preOrder = preOrderTraversal(tree);
+    const inOrder = inOrderTraversal(tree);
+    const postOrder = postOrderTraversal(tree);
+
+    // Mostrar preorden
+    preOrderTable.innerHTML = createTraversalTable('Preorden', preOrder);
+    // Mostrar inorden
+    inOrderTable.innerHTML = createTraversalTable('Inorden', inOrder);
+    // Mostrar postorden
+    postOrderTable.innerHTML = createTraversalTable('Postorden', postOrder);
+}
+
+function createTraversalTable(title, traversal) {
+    return `
+        <h4>${title}</h4>
+        <table class="table table-bordered">
+            <tr>
+                <th>Recorrido</th>
+            </tr>
+            <tr>
+                <td>${traversal.join(' ')}</td>
+            </tr>
+        </table>
+    `;
+}
+
+// Recorridos
+function preOrderTraversal(node) {
+    if (!node) return [];
+    return [node.value].concat(preOrderTraversal(node.left), preOrderTraversal(node.right));
+}
+
+function inOrderTraversal(node) {
+    if (!node) return [];
+    return inOrderTraversal(node.left).concat([node.value], inOrderTraversal(node.right));
+}
+
+function postOrderTraversal(node) {
+    if (!node) return [];
+    return postOrderTraversal(node.left).concat(postOrderTraversal(node.right), [node.value]);
+}
+
+// Función para formatear la ecuación
 function formatEquation(equation) {
-    // Añade un operador de multiplicación implícito antes de un paréntesis o entre un número y un paréntesis
-    return equation.replace(/(\d)\(/g, '$1*(').replace(/\)(\d)/g, ')*$1');
+    return equation.replace(/(\d|\))\(/g, '$1*(').replace(/\)(\d|\w)/g, ')*$1');
 }
 
+// Función para validar la ecuación
 function validateEquation(equation) {
-    // Verificar que la ecuación no contenga números negativos
     if (/\-\d+/.test(equation)) return false;
-
-    // Verificar que los paréntesis estén balanceados
     const stack = [];
     for (let char of equation) {
         if (char === '(') stack.push(char);
@@ -44,17 +99,18 @@ function validateEquation(equation) {
         }
     }
     if (stack.length > 0) return false;
-
+    if (/[^a-zA-Z0-9\+\-\*\/\(\)\s]/.test(equation)) return false;
+    if (/[+\-*/]{2,}/.test(equation)) return false;
     return true;
 }
 
+// Función para construir el árbol de expresión
 function buildExpressionTree(expression) {
     const operators = ['+', '-', '*', '/'];
     let tokens = tokenize(expression);
     let nodeStack = [];
     let operatorStack = [];
 
-    // Precedencia de los operadores
     const precedence = {
         '+': 1,
         '-': 1,
@@ -69,8 +125,8 @@ function buildExpressionTree(expression) {
     }
 
     for (let token of tokens) {
-        if (!isNaN(token)) {
-            nodeStack.push({ value: token });  // Si es un número, lo añadimos como nodo
+        if (!isNaN(token) || /^[a-zA-Z]+$/.test(token)) {
+            nodeStack.push({ value: token });
         } else if (operators.includes(token)) {
             while (operatorStack.length && precedence[operatorStack[operatorStack.length - 1]] >= precedence[token]) {
                 nodeStack.push(createNode(operatorStack.pop()));
@@ -82,25 +138,23 @@ function buildExpressionTree(expression) {
             while (operatorStack[operatorStack.length - 1] !== '(') {
                 nodeStack.push(createNode(operatorStack.pop()));
             }
-            operatorStack.pop();  // Elimina el paréntesis de apertura '('
+            operatorStack.pop();
         }
     }
 
-    // Procesa operadores restantes
     while (operatorStack.length) {
         nodeStack.push(createNode(operatorStack.pop()));
     }
 
-    return nodeStack[0];  // El nodo raíz del árbol
+    return nodeStack[0];
 }
 
 function tokenize(expression) {
-    // Extraer números, operadores y paréntesis de la expresión
-    return expression.match(/(\d+|\+|\-|\*|\/|\(|\))/g);
+    return expression.match(/([a-zA-Z]|\d+|\+|\-|\*|\/|\(|\))/g);
 }
 
+// Función para mostrar el árbol gráficamente
 function displayTree(tree, container) {
-    // Función recursiva para mostrar el árbol gráficamente
     function createTreeElement(node) {
         if (!node) return null;
 
@@ -143,10 +197,9 @@ function changeTitleColor() {
         title.classList.remove(colors[currentColorIndex]);
         currentColorIndex = (currentColorIndex + 1) % colors.length;
         title.classList.add(colors[currentColorIndex]);
-    }, 1000); // Cambia cada 3 segundos
+    }, 1000);
 }
 
-// Llama a la función cuando la página cargue
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     changeTitleColor();
 });

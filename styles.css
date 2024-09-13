@@ -44,14 +44,6 @@ h1 {
     background-color: #6aaff8;
 }
 
-.btn-color-change {
-    background-color: #f39c12; /* Amarillo */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    margin: 10px;
-}
-
 .tree-container {
     display: flex;
     justify-content: center;
@@ -76,28 +68,6 @@ h1 {
     position: relative;
 }
 
-.tree-level {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    position: relative;
-}
-
-.line {
-    position: absolute;
-    width: 2px;
-    background-color: #fff;
-    height: 50px;
-}
-
-.line-horizontal {
-    position: absolute;
-    height: 2px;
-    background-color: #fff;
-    width: 50px;
-}
-
 .wrapper {
     display: flex;
     flex-direction: column;
@@ -112,8 +82,9 @@ h1 {
     justify-content: center;
 }
 
-/* Añade estas clases para los colores del título */
+/* Colores dinámicos del título */
 .color-1 { color: #48ff00; } 
 .color-2 { color: #ff00f2; } 
 .color-3 { color: #e5ff00; } 
-.color-4 { color: #ff0000; } 
+.color-4 { color: #ff0000; }
+

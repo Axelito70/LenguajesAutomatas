@@ -9,21 +9,29 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-5">Árbol de Expresión-Lenguajes y automatas II</h1>
+        <h1 class="text-center mt-5">Árbol de Expresión - Lenguajes y Automatas II</h1>
         <div class="row">
             <div class="col-md-12">
                 <label for="equationInput" class="form-label">Introduce la ecuación:</label>
-                <input type="text" id="equationInput" class="form-control" placeholder="Ejemplo: (2+3)*(5-4)">
+                <input type="text" id="equationInput" class="form-control" placeholder="Ejemplo: 3 + ((3+6)(2/3))">
                 <div class="alert alert-danger mt-3 d-none" id="errorAlert">Ecuación incompleta o inválida (números negativos no permitidos).</div>
             </div>
         </div>
         <div class="row mt-4">
             <div class="col-md-12 text-center">
                 <button class="btn btn-primary" onclick="processEquation()">Generar Árbol</button>
+                <button class="btn btn-primary" onclick="location.reload()">Recargar</button>
             </div>
         </div>
         <div class="row mt-5">
             <div id="treeContainer" class="tree-container"></div>
         </div>
+        <div class="row mt-5">
+            <div class="col-md-4" id="preOrderTable"></div>
+            <div class="col-md-4" id="inOrderTable"></div>
+            <div class="col-md-4" id="postOrderTable"></div>
+        </div>
     </div>
     <script src="app.js"></script>
+</body>
+</html>
